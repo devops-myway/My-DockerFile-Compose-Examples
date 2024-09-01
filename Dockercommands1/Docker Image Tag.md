@@ -54,10 +54,19 @@ docker image tag my-image:1.0.0 my-image:1.0.0-alpine
 docker image ls
 
 ``````
-##### Tagging a Docker image for Docker Hub
+##### Tagging a Docker image for Docker Hub or azure registry
 To push or upload a Docker image to Docker Hub or registry, you need to tag it appropriately.
-you need to prefix your image name with your Docker Hub username
+you need to prefix your image name with your Docker Hub username or url server login
+Rename the image to include the URL of our registry server (Login server), which is the Azure Container Registry.
 ``````sh
 docker push <DOCKER_HUB_USERNAME/IMAGE_NAME[:tag]>
+
+# The command for adding a new tag along with the service URL works as follows:
+docker tag image-name:tag login-server/destination-image-name:tag
+
+# Azure Container Registry
+docker build -t image-name -f AzureApiContainer/Dockerfile .
+docker tag azureapicontainer:latest pagottoacr.azurecr.io/azureapicontainer:v1
+
 
 ``````
