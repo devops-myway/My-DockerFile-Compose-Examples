@@ -58,6 +58,8 @@ docker image ls
 To push or upload a Docker image to Docker Hub or registry, you need to tag it appropriately.
 you need to prefix your image name with your Docker Hub username or url server login
 Rename the image to include the URL of our registry server (Login server), which is the Azure Container Registry.
+The docker tag command creates a new version of the same image with a different tag and name.
+
 ``````sh
 docker push <DOCKER_HUB_USERNAME/IMAGE_NAME[:tag]>
 
@@ -67,6 +69,37 @@ docker tag image-name:tag login-server/destination-image-name:tag
 # Azure Container Registry
 docker build -t image-name -f AzureApiContainer/Dockerfile .
 docker tag azureapicontainer:latest pagottoacr.azurecr.io/azureapicontainer:v1
+
+
+``````
+##### Tagging a Docker image for azure registry
+
+Rename the image to include the URL of our registry server (Login server), which is the Azure Container Registry.
+The docker tag command creates a new version of the same image with a different tag and name.
+An important point to note is that each Azure Container Registry resource has a URL for managing artifacts. This information can be found on the resource’s page and is labeled as the Login server.
+
+``````sh
+# Creating the Image Registry
+az login
+az account set -s name-of-subscription
+az acr create -g "resource-group-name" -n "resource-name" --sku sku-name
+
+# The command for adding a new tag along with the service URL works as follows:
+docker tag image-name:tag login-server/destination-image-name:tag
+
+# Build the Image and publish or upload to the ACR
+docker build -t image-name -f AzureApiContainer/Dockerfile .
+docker tag azureapicontainer:latest pagottoacr.azurecr.io/azureapicontainer:v1
+
+# With the image ready for upload, we first need to authenticate with the Azure Container Registry
+az acr login -n azure-container-registry-name
+
+# After authentication, we are ready to upload the image using the following command:
+docker push server-image-name:tag
+docker push pagottoacr.azurecr.io/azureapicontainer:v1
+
+# Creating and Uploading the Image with Azure CLI
+az acr build -t "image-name" -r registry-name -f dockerfile-directory .
 
 
 ``````
