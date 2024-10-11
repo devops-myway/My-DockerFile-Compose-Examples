@@ -24,7 +24,7 @@ docker push mywebappacrdemo.azurecr.io/mywebapp:v1
 aws ecr create-repository --repository-name my-repo-name --region your- region
 aws ecr get-login-password --region your-region | docker login --username AWS --password-stdin your-account-id.dkr.ecr.your-region.amazonaws.com
 
-docker tag my-image:latest your-account-id.dkr.ecr.your- region.amazonaws.com/my-repo-name:latest
+docker tag my-image:latest your-account-id.dkr.ecr.your-region.amazonaws.com/my-repo-name:latest
 docker push your-account-id.dkr.ecr.your-region.amazonaws.com/my-repo-name:latest
 ``````
 
