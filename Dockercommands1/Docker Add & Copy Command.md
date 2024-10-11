@@ -8,9 +8,9 @@ COPY does not automate untars tar files.
 
 Best Practice: only use ADD when you need this double duty functionality.
 
-The ADD tarredfiles.tar /root in the Dockerfile automate untars tarredfiles.tar into /root/.
+- The ADD tarredfiles.tar /root in the Dockerfile automate untars tarredfiles.tar into /root/.
 
-The COPY more-tarredfiles.tar /root in the Dockerfile merely copies more-tarredfiles.tar into /root/.
+- The COPY more-tarredfiles.tar /root in the Dockerfile merely copies more-tarredfiles.tar into /root/.
 
 ``````sh
 touch in-tar-file-1
