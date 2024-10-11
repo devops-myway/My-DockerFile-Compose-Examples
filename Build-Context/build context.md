@@ -2,7 +2,7 @@ https://docs.docker.com/build/building/context/
 
 ##### Build context
 
-The docker build and docker buildx build commands build Docker images from a Dockerfile and a context.
+The "docker build && docker buildx build" commands build Docker images from a Dockerfile and a context.
 
 The build context is the set of files that your build can access.
 
