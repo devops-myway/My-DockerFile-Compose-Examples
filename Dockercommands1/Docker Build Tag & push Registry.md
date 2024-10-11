@@ -7,10 +7,10 @@ In Docker, a "Tag" is an identifying tag attached to a Docker image to distingui
 or to specify other uses for it.
 The tag is appended to the image name with a validated colon (:) to create a unique name for this version or interpretation of the image.
 
-• SOURCE_IMAGE: is the name of the image you want to tag.
-• TAG: is the tag associated with the source image (optional).
-• TARGET_IMAGE: is the new name you want to give to the image.
-• TAG: is the new tag you want to assign to the image (optional).
+- SOURCE_IMAGE: is the name of the image you want to tag.
+- TAG: is the tag associated with the source image (optional).
+- TARGET_IMAGE: is the new name you want to give to the image.
+- TAG: is the new tag you want to assign to the image (optional).
 
 ``````sh
 docker image tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
