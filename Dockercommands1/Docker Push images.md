@@ -11,7 +11,8 @@ The image name must contain the registry host, the port, and the repository name
 
 - HOST: The optional registry hostname where the image is located. If no host is specified, Docker's public registry at docker.io is used by default
 - PORT_NUMBER: The registry port number if a hostname is provided
-- PATH: The path of the image, consisting of slash-separated components. NAMESPACE or organization's name/]REPOSITORY. If no namespace is specified, library is used, which is the namespace for Docker Official Images 
+- PATH: The path of the image, consisting of slash-separated components.
+- NAMESPACE or Registry or organization's name/]REPOSITORY. If no namespace is specified, library is used, which is the namespace for Docker Official Images 
 
 ``````sh
 [registry host]:[registry port]/[repository name]:[tag name]
