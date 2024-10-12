@@ -14,9 +14,9 @@ EXPOSE 80/tcp
 
 EXPOSE 80/udp
 
--t, --tcp display only TCP sockets
--a, --all display all sockets
--n, --numeric don't resolve service names, show numeric port number
+- -t, --tcp display only TCP sockets
+- -a, --all display all sockets
+- -n, --numeric don't resolve service names, show numeric port number
 
 ``````sh
 vi Dockerfile
