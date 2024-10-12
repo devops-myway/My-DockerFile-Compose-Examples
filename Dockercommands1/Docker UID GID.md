@@ -5,9 +5,9 @@ Every file and directory in Linux is assigned an owner and a group. The owner is
 
 The permissions are divided into three groups:
 
-User: The owner of the file.
-Group: Users who are part of the file’s group.
-Others: All other users.
+- User: The owner of the file.
+- Group: Users who are part of the file’s group.
+- Others: All other users.
 
 You can view the owner and group of a file using the ‘ls -l’ command:
 ``````sh
