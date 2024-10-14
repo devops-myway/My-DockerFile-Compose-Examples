@@ -10,63 +10,31 @@ so those aren't a big deal - but the download size will affect everyone and ever
 As a general rule of thumb, reducing the number of layers in a final image helps reduce the size.
 
 ###### Multi-Stage DockerFile
-Docker has a feature called multi-stage builds where multiple FROM instructions can be used in a single Dockerfile,
-each with an optional alias. Each stage can use a different base (e.g. golang:1.14, node:lts, alpine:latest, etc.), 
-and each stage can copy files from previous stages with the COPY instruction.
-
+Multistage builds make use of one Dockerfile with multiple FROM instructions. Each of these FROM instructions is a new build stage that can COPY artifacts from the previous stages.
+- The build stage is named by appending AS *name-of-build* to the FROM instruction.
+- The name of the build stage can be used in a subsequent FROM and COPY command by providing a convenient way to identify the source layer for files brought into the image build.
+- The final image is produced from the last stage executed in the Dockerfile.
 ``````sh
-main.go
+FROM node:12.13.0-alpine As build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
 
-package main
-import "fmt"
-func main() {
-    fmt.Println("hello world")
-}
-
-go run main.go
+FROM nginx
+EXPOSE 3000
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build /usr/share/nginx/html
 
 ``````
 #####  # Single-stage build
 8 layers! Granted, 5 of them are coming from the base image - but that's a lot, especially for such a small application.
 ``````sh
-FROM golang:1.14.4-alpine
-WORKDIR /go/src/app
-COPY main.go .
-RUN go build -o /go/bin/app main.go
-CMD ["app"]
 
-docker build -t example .
-docker run example
-
-docker image ls example
-docker run golang:1.14.4-alpine sh -c "du -sh /usr/local/go/*"
-
-docker inspect example --format '{{range .RootFS.Layers}}{{println .}}{{end}}'
 
 ``````
-#####  Multi-stage build
-Change the Dockerfile to add an extra FROM instruction that will create a second stage that will COPY the built binary from the first stage:
-7.64MB! Roughly 2% of the size it was before!
 
-The second FROM instruction starts a new build stage with the scratch image as its base. The COPY --from=0 line copies 
-just the built artifact from the previous stage into this new stage. 
-
-``````sh
-FROM golang:1.14.4-alpine AS builder
-WORKDIR /go/src/app
-COPY main.go .
-RUN go build -o /go/bin/app main.go
-
-FROM alpine:latest
-COPY --from=builder /go/bin/app /usr/local/bin/app
-CMD ["app"]
-
-docker build -t example .
-docker run example
-
-docker image ls example
-
-``````
 
 ``````sh
 
