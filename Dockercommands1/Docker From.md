@@ -22,6 +22,7 @@ CMD nginx -g 'daemon off;'
 ``````
 
 ##### Simple Dockerfile 3
+main.py file is the flask code python codebase inside of our local pycharm directory
 ``````sh
 FROM python:3.9.5-buster
 ADD . /code                     <--- import the code from source local directory into container image destination
