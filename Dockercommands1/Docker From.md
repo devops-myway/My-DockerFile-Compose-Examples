@@ -30,4 +30,6 @@ WORKDIR /code                   <---- destination directory inside the container
 RUN pip install flask
 EXPOSE 5001
 CMD python main.py
+
+docker build -t flaskapp .
 ``````
