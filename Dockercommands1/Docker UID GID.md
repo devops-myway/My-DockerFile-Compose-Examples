@@ -32,7 +32,7 @@ mkdir creates a directory.
 mkdir /home/dev-team
 
 Change the group ownership of the folder dev-team to group dev-team
-chown :dev-team /home/dev-team/
+chown -R :dev-team /home/dev-team/
 
 #Make sure the permissions of folder dev-team allow group members to create and delete files
 chmod g+w /home/dev-team/
