@@ -1,5 +1,24 @@
-#####  CMD directive
+##### NOTE: 
+By the end, you'll be a Dockerfile ninja, wielding these instructions with confidence and precision.
+
+##### The RUN Directive
+The RUN directive is a key instruction used in Dockerfiles to run commands while building your Docker image.
+It's your go-to tool for setting up the environment inside the image, allowing you to install packages, update dependencies, configure settings, and basically do anything you need to make your image ready to use.
+
+``````sh
+FROM ubuntu:20.04
+
+# Update package lists and install necessary packages
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+``````
+
+#####  The CMD Directive
 To define an executable with its arguments that the container should run. In this case, we can omit the ENTRYPOINT directive.
+It's like a pre-set option for what your container should do when it "boots up."
 
 ##### The Exec Form of the CMD Directive
 The exec form invokes only the defined executable, without a shell
