@@ -146,3 +146,26 @@ docker run --name tutorial tutorial:demo
 Expected Output
 /root
 ``````
+#####  CMD or ENTRYPOINT
+These two come into play when you actually run a container from that image. when a container starts, Docker needs to know what it should do – 
+what program to run, and how to run it. That's where CMD and ENTRYPOINT step in. They tell Docker what the main process inside the container is and how to start it.
+
+- ENTRYPOINT: This is where you define the "command part" of the expression. It's the core thing you want your container to do when it starts.
+- CMD: This is where you define the "parameters" for that command. They're the additional instructions you want to give it.
+
+##### Example 1 
+Dockerfile that uses Alpine Linux as the base image and wants to run the ping command could look like this:
+
+``````sh
+FROM alpine:latest
+
+ENTRYPOINT ["ping"]
+CMD ["-c", "10", "127.0.0.1"]
+
+docker image build -t pinger .
+docker container run --rm -it pinger
+
+docker container run --rm -it pinger -w 5 127.0.0.1
+``````
+
+
