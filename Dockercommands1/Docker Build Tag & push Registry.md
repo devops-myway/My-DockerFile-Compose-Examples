@@ -1,3 +1,36 @@
+##### Docker Image Naming and Tagging
+- There are two basic approaches for labeling and naming Docker images. When you build an image from a Dockerfile, you can either use the -t option, or the docker tag command.
+- When you use the docker tag command, you specify the source repository name you are going to use as the base and the target name and tag you'll be creating
+- When you use the docker build command, to name your image, you will use the Dockerfile as the source and then the -t option to name and tag your images.
+- If you're uploading your images to Docker Hub, though, you'll definitely need to add your Docker Hub username to the beginning of the repository name, like this:
+
+``````sh
+docker tag <source_repository_name>:<tag> <target_repository_name>:tag
+docker build -t <target_repository_name>:tag Dockerfile
+docker built -t <dockerhub_user>/<target_repository_name>:tag Dockerfile
+
+``````
+##### Tagging Docker Images
+
+``````sh
+docker rmi -f $(docker images -a -q)
+docker pull busybox
+docker images
+
+# we'll use the image ID. Keep in mind that your image ID will be different from the one I use in the example.
+docker tag 65ad0d468eb1 mybusybox:v1
+docker tag mybusybox:v1 kalkost/busybox:v1
+docker images
+
+``````
+##### Let's put together a Dockerfile to create a basic image, using the mybusybox image
+
+``````sh
+echo "FROM mybusybox:v1" > Dockerfile
+docker build it built_image:v1.1.1 .
+docker images
+
+``````
 #### Docker Image Tag
 
 https://docs.docker.com/reference/cli/docker/image/tag/
@@ -44,15 +77,41 @@ docker tag nginx xyz/nginx:web
 docker image ls
 
 ``````
-#### Upload Image to DockerHub
-to upload the image to Docker Hub (the account must be available on Docker Hub to be able to upload the image), 
-you must first login to your Docker Hub account with the command:
-To make sure the image has been pushed to Docker Hub, go to Account and note that the image has been pushed.m
-``````sh
-docker login
-# Docker Hub username and password
+#### Docker Image Tagging Policies
+- Deciding on a tagging policy early in the game is a smart move to avoid these headaches.
+- Semantic versioning: is a popular and reliable system that can also be used for tagging your Docker images. If you haven't heard of it before, it's a simple three-part number system (major.minor.patch).
+- For example, a version like 2.1.0 would indicate a major release of version 2, a minor release of 1, and no patches.
+- git commit hash: Another option is to use a hash value, such as the "git commit hash" for your code. This allows you to easily link the image tag back to the specific code changes in your repository, making it super easy for anyone to see what's been updated.
 
-docker push [dockerhub username or ecr or acr username/image:tag]
+##### Automating Image Tagging
+
+``````sh
+FROM alpine:latest
+RUN apk upgrade --no-cache && apk update && apk add wget curl
+ARG VERSION=0.0.0
+# Copy the version.txt file to the image
+COPY version.txt /version.txt
+# Command to read and display the version
+CMD ["cat", "/version.txt"]
+
+#Create a version.txt file with the following content and create the following build.sh
+
+#!/bin/bash
+# Read current version from version.txt
+current_version=$(cat version.txt)
+# Extract the major and minor versions, set patch to 0
+major_version=$(echo $current_version | awk -F. '{print $1}')
+minor_version=$(echo $current_version | awk -F. '{print $2}')
+new_minor_version=$((minor_version + 1))
+new_version="$major_version.$new_minor_version.0"
+# Update version.txt with the new version
+echo $new_version > version.txt
+# Build the Docker image with the new version as a build argument
+docker build -t base-image:$new_version --build-arg VERSION=$new_version 
+
+chmod +x build.sh
+./build.sh
+docker images
 ``````
 #### 
 
