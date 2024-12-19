@@ -32,6 +32,8 @@ docker container inspect ad
 #To get only specific info about the container, you can run command from CLI passing the --format argument
 docker inspect --format='{{.LogPath}}' \$INSTANCE_ID
 
+docker container inspect container_name | grep -i addr   # grep for the ip address of the container
+
 ``````
 ##### End
 ``````sh
