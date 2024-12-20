@@ -17,21 +17,21 @@ sudo chown newuser filename
 groupadd dev-team
 Verify: cat /etc/group | grep dev-team
 
-useradd creates a new user and adds to the specified group.
+#useradd creates a new user and adds to the specified group.
 
 useradd -G dev-team John
 useradd -G dev-team Bob
 
 Verify: cat /etc/group | grep dev-team
 
-passwd creates a password for users.
+#passwd creates a password for users.
 passwd John
 passwd Bob
 
 mkdir creates a directory.
 mkdir /home/dev-team
 
-Change the group ownership of the folder dev-team to group dev-team
+#Change the group ownership of the folder dev-team to group dev-team
 chown -R :dev-team /home/dev-team/
 
 #Make sure the permissions of folder dev-team allow group members to create and delete files
