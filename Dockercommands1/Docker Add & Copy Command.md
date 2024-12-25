@@ -94,7 +94,7 @@ ADD directive in Dockerfiles functions similar to the COPY directive but with ad
 - Docker will automatically extract its contents into <destination> within the Docker image filesystem.
 
 ``````sh
-ADD <source> <destination>
+ADD <source_local_directory> <destination_image_file_system>
 
 ADD index.html /var/www/html/index.html
 ADD http://example.com/test-data.csv /tmp/test-data.csv
