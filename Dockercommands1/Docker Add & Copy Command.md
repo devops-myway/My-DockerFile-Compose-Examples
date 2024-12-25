@@ -77,7 +77,7 @@ docker exec -it tutorial /bin/sh
  - The <source> specifies the path to the file or directory
  - The <destination> specifies the path where the file or directory should be copied within the Docker image filesystem.
 ``````sh
-COPY <source> <destination>
+COPY <local_directory_source> <destination_image_fsys>
 
 COPY index.html /var/www/html/index.html
 COPY *.html /var/www/html/
