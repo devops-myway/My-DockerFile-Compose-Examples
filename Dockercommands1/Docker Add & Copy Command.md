@@ -96,9 +96,9 @@ ADD directive in Dockerfiles functions similar to the COPY directive but with ad
 ``````sh
 ADD <source_local_directory> <destination_image_file_system>
 
-ADD index.html /var/www/html/index.html
-ADD http://example.com/test-data.csv /tmp/test-data.csv
-ADD myapp.tar.gz /opt/myapp/
+ADD index.html /var/www/html/index.html,                  #use copy directive un such cases instead: COPY index.html /var/www/html/index.html
+ADD http://example.com/test-data.csv /tmp/test-data.csv  #use Add directive for remote url
+ADD myapp.tar.gz /opt/myapp/                           #use Add directive for zip files
 
 ``````
 ##### COPY vs ADD in Dockerfiles
