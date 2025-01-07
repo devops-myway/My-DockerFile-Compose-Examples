@@ -13,7 +13,7 @@ You can pass any of the following inputs as the context for a build:
 - A plain-text file or tarball piped to the docker build command through standard input
 
 ``````sh
-docker build [OPTIONS] PATH | URL | -            
+docker buildx build [OPTIONS] PATH | URL | -            
 
 ``````
 
@@ -21,7 +21,7 @@ docker build [OPTIONS] PATH | URL | -
 specify a relative or absolute filepath to the docker build command. current directory (.) as a build context:
 
 ``````sh
-docker build .                   
+docker buildx build .                   
 
 ``````
 ###### Local directories
@@ -44,7 +44,7 @@ COPY package.json package-lock.json .
 RUN npm ci
 COPY index.ts src .
 
-docker build .
+docker buildx build .
 ``````
 
 ###### Local context with Dockerfile from stdin
@@ -61,7 +61,7 @@ touch somefile.txt
 
 # build an image using the current directory as context
 # and a Dockerfile passed through stdin
-docker build -t myimage:latest -f- . <<EOF
+docker buildx build -t myimage:latest -f- . <<EOF
 FROM busybox
 COPY somefile.txt ./
 RUN cat /somefile.txt
@@ -75,7 +75,7 @@ When you pipe a tarball to the build command, the build uses the contents of the
 tar czf foo.tar.gz *
 docker build - < foo.tar.gz
 
-docker build --file test.Dockerfile - < foo.tar.gz
+docker buildx build --file test.Dockerfile - < foo.tar.gz
 ``````
 
 ###### Git repositories
