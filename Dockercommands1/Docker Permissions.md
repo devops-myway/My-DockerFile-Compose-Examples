@@ -93,6 +93,7 @@ COPY --chown=user:group <src: is the path to the file or directory on your host>
 - This can be done using the RUN command in conjunction with chmod.
 ``````sh
 # The -R flag applies the changes recursively to all files and directories within /code/app
+WORKDIR /code/app
 COPY ./app /code/app
 RUN chmod -R 755 /code/app
 
