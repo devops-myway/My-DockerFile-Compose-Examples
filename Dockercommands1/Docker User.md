@@ -11,7 +11,7 @@ RUN apt-get -y update
 RUN groupadd -r user && useradd -r -g user user
 USER user
 
-docker build -t user-demo .
+docker buildx build -t user-demo --file .
 docker run -it user-demo bash
 id
 
