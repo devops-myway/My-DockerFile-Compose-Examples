@@ -1,8 +1,7 @@
 ##### USER Directive
 - By default, a Docker Container runs as a Root user. This poses a great security threat if you deploy your applications on a large scale inside Docker Containers.
-- You can change or switch to a different user inside a Docker Container using the USER Instruction
-- you first need to create a user and a group inside the Container.
-- 
+- You can change or switch to a non-root user inside a Docker Container using the USER Instruction or directive.
+- you first need to create a non-root user and a group inside the Container.
 
 ``````sh
 # Create the Dockerfile
