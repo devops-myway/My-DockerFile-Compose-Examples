@@ -1,9 +1,9 @@
 #####  Dockerfile RUN
 https://docs.docker.com/reference/dockerfile/#run
 
-The RUN instruction will execute its given commands and create the resulting output in a new layer on top of the current image.
-RUN is used to create probably the largest part of an image. It runs most of the commands you are used to use at the shell when setting up a server / vps.
-Using -it flag for docker run command
+- The RUN instruction will execute its given commands and create the resulting output in a new layer on top of the current image.
+- RUN is used to create probably the largest part of an image. It runs most of the commands you are used to use at the shell when setting up a server / vps.
+- Using -it flag for docker run command
 
 Typical example.
 ``````sh
