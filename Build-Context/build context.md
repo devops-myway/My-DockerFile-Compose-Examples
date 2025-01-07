@@ -45,7 +45,7 @@ COPY package.json package-lock.json .
 RUN npm ci
 COPY index.ts src .
 
-docker buildx build .
+docker buildx build -t tutorial:demo --file Dockerfile .
 ``````
 
 ###### Local context with Dockerfile from stdin
