@@ -13,7 +13,7 @@ You can pass any of the following inputs as the context for a build:
 - A plain-text file or tarball piped to the docker build command through standard input
 
 ``````sh
-docker buildx build [OPTIONS] PATH | URL | -            
+docker buildx build [OPTIONS] --file PATH | URL | -  . or current context or directory of the file.      
 
 ``````
 
@@ -21,7 +21,8 @@ docker buildx build [OPTIONS] PATH | URL | -
 specify a relative or absolute filepath to the docker build command. current directory (.) as a build context:
 
 ``````sh
-docker buildx build .                   
+docker buildx build .
+docker buildx build -t tutorial:demo --file Dockerfile .                   
 
 ``````
 ###### Local directories
