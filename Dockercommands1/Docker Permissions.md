@@ -20,6 +20,12 @@ FROM ubuntu:22.04
 RUN useradd -ms /bin/bash myuser
 USER myuser
 
+# example permission on Dockerfile
+FROM ubuntu:latest
+RUN apt-get -y update
+RUN groupadd -g 1500 dev_users && useradd -g dev_users -u 1500 user1
+USER user1
+
 ``````
 ##### Changing Permissions at Runtime using chmod
 - You may need to change the permissions of files or directories within a running container.
