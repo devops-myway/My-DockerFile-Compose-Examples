@@ -37,6 +37,17 @@ COPY --chown=55:mygroup files* /somedir/
 COPY --chown=games:games gamefile /root
 COPY --chown=35:35 anothergame /root
 
+# Use the RUN command Example
+FROM joomla:3.9-php7.2-apache
+RUN apt-get update \
+&& apt-get install -y apt-utils vim curl
+
+COPY --chown=www-data:www-data ./joomla_html /var/www/html
+
+RUN chmod -R 765 /var/www/html/
+COPY ./docker/php.ini /usr/local/etc/php/conf.d/php-extras.ini
+EXPOSE 80
+
 ``````
 ##### Dockerfile example
 ``````sh
