@@ -23,7 +23,7 @@ FROM alpine:3.8
 RUN echo $HOME
 RUN ["echo", "$HOME"]
 
-docker buildx build --no-cache --tag tutorial:demo --file Dockerfile  .
+docker buildx build -t tutorial:demo --file Dockerfile .
 
 ``````
 #####  How to run the Docker image
