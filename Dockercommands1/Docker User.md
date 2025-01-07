@@ -8,8 +8,8 @@
 
 FROM ubuntu:latest
 RUN apt-get -y update
-RUN groupadd -r user && useradd -r -g user user
-USER user
+RUN groupadd -g 1500 dev_users && useradd -g dev_users -u 1500 user1
+USER user1
 
 docker buildx build -t user-demo --file .
 docker run -it user-demo bash
