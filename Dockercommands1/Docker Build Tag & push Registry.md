@@ -81,9 +81,8 @@ docker image ls
 
 ``````
 #### Docker Image Tagging Policies
-- Deciding on a tagging policy early in the game is a smart move to avoid these headaches.
-- Semantic versioning: is a popular and reliable system that can also be used for tagging your Docker images. If you haven't heard of it before, it's a simple three-part number system (major.minor.patch).
-- For example, a version like 2.1.0 would indicate a major release of version 2, a minor release of 1, and no patches.
+- To popular ways to Tag Docker Images:
+- Semantic versioning: is a popular and reliable system that can also be used for tagging your Docker images. If you haven't heard of it before, it's a simple three part number system (major.minor.patch). For example, a version like 2.1.0 would indicate a major release of version 2, a minor release of 1, and no patches.
 - git commit hash: Another option is to use a hash value, such as the "git commit hash" for your code. This allows you to easily link the image tag back to the specific code changes in your repository, making it super easy for anyone to see what's been updated.
 
 ##### Automating Image Tagging
@@ -115,6 +114,42 @@ docker build -t base-image:$new_version --build-arg VERSION=$new_version
 chmod +x build.sh
 ./build.sh
 docker images
+``````
+#### Tag Docker Images with Git Commit Information
+- This shell script builds a Docker image and tags it with the short hash of the latest git commit.
+- It passes the short commit hash and a build timestamp as build arguments to the Dockerfile, so that you can access these in the image/container.
+``````sh
+#!/bin/bash
+
+VERSION=$(git log -1 --pretty=%h)
+REPO="registry.example.com/my-project:"
+TAG="$REPO$VERSION"
+LATEST="${REPO}latest"
+BUILD_TIMESTAMP=$( date '+%F_%H:%M:%S' )
+docker build -t "$TAG" -t "$LATEST" --build-arg VERSION="$VERSION" --build-arg BUILD_TIMESTAMP="$BUILD_TIMESTAMP" . 
+docker push "$TAG" 
+docker push "$LATEST"
+
+ARG VERSION
+ENV VERSION $VERSION
+ARG BUILD_TIMESTAMP
+ENV BUILD_TIMESTAMP $BUILD_TIMESTAMP
+
+``````
+##### Git commit hash
+- One of the option that you can try is to set commit hash in the environment variable, so you will able to get the ENV from the image as well.
+- 
+``````sh
+# Dockerfile
+FROM alpine
+ARG GIT_COMMIT
+ENV GIT_COMMIT=$GIT_COMMIT
+
+#Now you can get GIT_COMMIT from env
+echo "${GIT_COMMIT}"
+
+# Build docker file
+docker build --build-arg GIT_COMMIT=$(git rev-parse HEAD) -t my_image:$(git rev-parse HEAD) <path to Dockerfile>
 ``````
 #### 
 
