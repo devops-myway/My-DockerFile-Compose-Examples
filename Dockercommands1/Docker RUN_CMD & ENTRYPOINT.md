@@ -86,18 +86,25 @@ We can use the Dockerfile COPY directive to copy the shell script file to our co
 ``````sh
 vi startup.sh
 
-! /bin/bash
-echo $HOME
-date
+#! /bin/bash
+echo "Current Date: $(date)"
+echo "Home Directory: $HOME"
 --- 
 vi Dockerfile
 
 FROM ubuntu:latest
-COPY startup.sh .
-CMD ["/bin/bash","-c","./startup.sh"]
+WORKDIR /app
+COPY --chown=user2 startup.sh .
+RUN useradd -m user2 && \
+    chown -R user2:user2 /app && \
+    chmod u+x ./startup.sh
+USER user2
+CMD ["bash"]
 ----
-docker build -t example3 .
-docker run -it example3
+docker buildx build -t test2:demo --file Dockerfile2 .
+docker image ls
+docker run -itd --name test2 4a83114fe0eb
+docker ps
 
 ``````
 #####  Example 3- Now CMD using the Exec form:
