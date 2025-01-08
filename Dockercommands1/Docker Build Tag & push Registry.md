@@ -9,6 +9,9 @@ docker tag <source_repository_name>:<tag> <target_repository_name>:tag
 docker build -t <target_repository_name>:tag Dockerfile
 docker built -t <dockerhub_user>/<target_repository_name>:tag Dockerfile
 
+docker tag local-image:tagname new-repo:tagname
+docker push new-repo:tagname
+
 ``````
 ##### Tagging Docker Images
 
