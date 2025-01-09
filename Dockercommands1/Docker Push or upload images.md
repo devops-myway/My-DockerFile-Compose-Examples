@@ -1,13 +1,13 @@
 
 
 ##### Pushing or Uploading a Docker Image to a Self-Hosted Registry
-A Docker registry is a service that manages container image repositories.
-It allows us to do things like create repositories, push and pull images, and manage repository access.
-Cloud-hosted Docker registries are also called public registries. Docker Hub is a well-known example of a public registry.
+- A Docker registry is a service that manages container image repositories.
+- It allows us to do things like create repositories, push and pull images, and manage repository access.
+- Cloud-hosted Docker registries are also called public registries. Docker Hub is a well-known example of a public registry.
 
 #### Tagging Images for Self-Hosted Registries
-When pushing an image, the image name defines where the image will be pushed.
-The image name must contain the registry host, the port, and the repository name.
+- When pushing an image, the image name defines where the image will be pushed.
+- The image name must contain the registry host, the port, and the repository name.
 
 - HOST: The optional registry hostname where the image is located. If no host is specified, Docker's public registry at docker.io is used by default
 - PORT_NUMBER: The registry port number if a hostname is provided
