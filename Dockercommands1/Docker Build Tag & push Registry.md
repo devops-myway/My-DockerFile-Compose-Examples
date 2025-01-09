@@ -85,37 +85,7 @@ docker image ls
 - Semantic versioning: is a popular and reliable system that can also be used for tagging your Docker images. If you haven't heard of it before, it's a simple three part number system (major.minor.patch). For example, a version like 2.1.0 would indicate a major release of version 2, a minor release of 1, and no patches.
 - git commit hash: Another option is to use a hash value, such as the "git commit hash" for your code. This allows you to easily link the image tag back to the specific code changes in your repository, making it super easy for anyone to see what's been updated.
 
-##### Automating Image Tagging
-
-``````sh
-FROM alpine:latest
-RUN apk upgrade --no-cache && apk update && apk add wget curl
-ARG VERSION=0.0.0
-# Copy the version.txt file to the image
-COPY version.txt /version.txt
-# Command to read and display the version
-CMD ["cat", "/version.txt"]
-
-#Create a version.txt file with the following content and create the following build.sh
-
-#!/bin/bash
-# Read current version from version.txt
-current_version=$(cat version.txt)
-# Extract the major and minor versions, set patch to 0
-major_version=$(echo $current_version | awk -F. '{print $1}')
-minor_version=$(echo $current_version | awk -F. '{print $2}')
-new_minor_version=$((minor_version + 1))
-new_version="$major_version.$new_minor_version.0"
-# Update version.txt with the new version
-echo $new_version > version.txt
-# Build the Docker image with the new version as a build argument
-docker build -t base-image:$new_version --build-arg VERSION=$new_version 
-
-chmod +x build.sh
-./build.sh
-docker images
-``````
-#### Tag Docker Images with Git Commit Information
+#### Tag Docker Images with Git Commit Information using git log or git rev-parse (recommended) commands:
 - This shell script builds a Docker image and tags it with the short hash of the latest git commit.
 - It passes the short commit hash and a build timestamp as build arguments to the Dockerfile, so that you can access these in the image/container.
 ``````sh
