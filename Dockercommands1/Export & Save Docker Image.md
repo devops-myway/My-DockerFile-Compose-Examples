@@ -20,45 +20,6 @@ docker export <container_id> -o <filename>.tar            <----  Step by Step Pr
 docker import <filename>.tar <new_image_name>             <----  Import the contents from a tarball to create a filesystem image
 ``````
 
-##### Exporting and Importing Docker Images and Containers
-
-``````sh
-# File: vi package.json
-{
-  "name": "basic-express-server",
-  "version": "1.0.0",
-  "description": "Demo for exporting and importing docker containers/images",
-  "main": "./src/app.js",
-  "scripts": {
-    "start": "node ./src/app.js"
-  },
-  "author": "Your Name",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.19.2"
-  }
-}
-
-Run npm install     <----- to install the dependencies.
-``````
-
-``````sh
-# File: vi src/app.js
-
-const express = require('express');
-const app = express();
-const port = 3000;
-
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
-
-
-``````
 ##### Let’s create a Dockerfile to containerize the Express server.
 ``````sh
 #File: Dockerfile
