@@ -1,14 +1,14 @@
 #####  Dockerfile EXPOSE Ports
 https://docs.docker.com/reference/dockerfile/#expose
 
-Dockerfile uses EXPOSE to expose ports of the container. The EXPOSE instruction declares the ports the container listens on.
-A port is the official way a process allows other processes to contact it and send it commands.
+- Dockerfile uses EXPOSE to expose ports of the container. The EXPOSE instruction declares the ports the container listens on.
+- A port is the official way a process allows other processes to contact it and send it commands.
 
-For example with Apache port 80 in normally exposed. Apache hides isolated within its container. The ONLY way to get it to do something is to access it via port 80.
+- For example with Apache port 80 in normally exposed. Apache hides isolated within its container. The ONLY way to get it to do something is to access it via port 80.
 
-To actually publish the port when running the container, use the -p flag on docker run to publish and map one or more ports
+- To actually publish the port when running the container, use the -p flag on docker run to publish and map one or more ports
 
-By default, EXPOSE assumes TCP. You can also specify UDP:
+- By default, EXPOSE assumes TCP. You can also specify UDP:
 
 EXPOSE 80/tcp
 
