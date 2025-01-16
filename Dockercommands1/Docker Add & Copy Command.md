@@ -119,3 +119,108 @@ COPY index.html .
 ADD https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg ./logo.png
 CMD ["ls"]
 ``````
+##### Copy2
+``````sh
+# point 1: copy the directory testproject and its content to a directory named project inside the tmp directory in a container.
+ls testproject/
+index.html  test.html  test.php
+
+# Dockerfile
+FROM ubuntu:14.04
+LABEL name="learning-ocean"
+LABEL email="[email protected]"
+ENV NAME Gaurav
+ENV PASS password
+RUN pwd > /tmp/1stpwd.txt
+RUN cd /tmp
+RUN pwd>/tmp/2ndpwd.txt
+WORKDIR /tmp
+RUN pwd>/tmp/3rdpwd.txt
+RUN apt-get update && apt-get install -y openssh-server && apt-get install -y python
+RUN useradd -d /home/gaurav -g root -G sudo -m -p $(echo "$PASS" | openssl passwd -1 -stdin) $NAME
+RUN whoami>/tmp/1stwhoami.txt
+USER $NAME
+RUN whoami>/tmp/2ndwhoami.txt
+RUN mkdir -p /tmp/project
+COPY testproject /tmp/project
+
+# Build and container instance
+docker image build -t myubuntu:81 .
+docker container run -it myubuntu:81
+# output
+Gaurav@f46db1563db6:/tmp$ ls
+1stpwd.txt  1stwhoami.txt  2ndpwd.txt  2ndwhoami.txt  3rdpwd.txt  project
+Gaurav@f46db1563db6:/tmp$ cd project/
+Gaurav@f46db1563db6:/tmp/project$ ls
+index.html  test.html  test.php
+Gaurav@f46db1563db6:/tmp/project$
+
+
+``````
+##### Add2 Difference with COPY
+- The main difference between the ADD and COPY instructions is that if the source file is in a recognized compression format such as identity, gzip, bzip2 or xz, then
+- ADD instruction will unpack it as a directory and copy it to the destination while COPY instruction will copy the compressed file as it is without any unpacking.
+``````sh
+FROM ubuntu:14.04
+LABEL name="learning-ocean"
+LABEL email="[email protected]"
+ENV NAME Gaurav
+ENV PASS password
+RUN pwd > /tmp/1stpwd.txt
+RUN cd /tmp
+RUN pwd>/tmp/2ndpwd.txt
+WORKDIR /tmp
+RUN pwd>/tmp/3rdpwd.txt
+RUN apt-get update && apt-get install -y openssh-server && apt-get install -y python
+RUN useradd -d /home/gaurav -g root -G sudo -m -p $(echo "$PASS" | openssl passwd -1 -stdin) $NAME
+RUN whoami>/tmp/1stwhoami.txt
+USER $NAME
+RUN whoami>/tmp/2ndwhoami.txt
+RUN mkdir -p /tmp/project
+COPY testproject.tar.gz /tmp/project
+
+# COPY used as TAR and copy will only copy the tar file without untar
+docker image build -t myubuntu:81 .
+
+gaurav@learning-ocean:~/dockerfiles$ docker container run -it myubuntu:81
+Gaurav@5d417b034c06:/tmp$ ls
+1stpwd.txt  1stwhoami.txt  2ndpwd.txt  2ndwhoami.txt  3rdpwd.txt  project
+Gaurav@5d417b034c06:/tmp$ cd project/
+Gaurav@5d417b034c06:/tmp/project$ ls
+testproject.tar.gz
+Gaurav@5d417b034c06:/tmp/project$
+
+``````
+``````sh
+FROM ubuntu:14.04
+LABEL name="learning-ocean"
+LABEL email="[email protected]"
+ENV NAME Gaurav
+ENV PASS password
+RUN pwd > /tmp/1stpwd.txt
+RUN cd /tmp
+RUN pwd>/tmp/2ndpwd.txt
+WORKDIR /tmp
+RUN pwd>/tmp/3rdpwd.txt
+RUN apt-get update && apt-get install -y openssh-server && apt-get install -y python
+RUN useradd -d /home/gaurav -g root -G sudo -m -p $(echo "$PASS" | openssl passwd -1 -stdin) $NAME
+RUN whoami>/tmp/1stwhoami.txt
+USER $NAME
+RUN whoami>/tmp/2ndwhoami.txt
+RUN mkdir -p /tmp/project
+ADD testproject.tar.gz /tmp/project
+
+# Build
+ docker image build -t myubuntu:81 .
+docker container run -it myubuntu:81
+#output
+Gaurav@55888cd83dd5:/tmp$ ls
+1stpwd.txt  1stwhoami.txt  2ndpwd.txt  2ndwhoami.txt  3rdpwd.txt  project
+Gaurav@55888cd83dd5:/tmp$ cd project/
+Gaurav@55888cd83dd5:/tmp/project$ ls
+testproject
+Gaurav@55888cd83dd5:/tmp/project$ cd testproject/
+Gaurav@55888cd83dd5:/tmp/project/testproject$ ls
+index.html  test.html  test.php
+Gaurav@55888cd83dd5:/tmp/project/testproject$
+``````
