@@ -5,16 +5,16 @@
 
 ##### USER options and parameters to note:
 - -u uid: Set the user’s ID to be uid. Unless you know what you’re doing, omit this option and accept the default
--g group: --gid : Set the user’s initial (default) group to group
--G group1,group2,: Make the user a member of the additional, existing groups group1, group2, and so on.
--d dir: Set the user’s home directory to be dir,
--m: Copy all files from your system skeleton directory, /etc/skel, into the newly created home directory
--k: to get new users started If you prefer to copy from a different directory (-k your_preferred_directory).
--M: create a user without a home directory
--e: To set an expiry date for a user account
--c: To add a comment or description for a user
--s shell: Set the user’s login shell to be shell
--p: To set an unencrypted password for the user
+- -g group: --gid : Set the user’s initial (default) group to group
+- -G group1,group2,: Make the user a member of the additional, existing groups group1, group2, and so on.
+- -d dir: Set the user’s home directory to be dir,
+- -m: Copy all files from your system skeleton directory, /etc/skel, into the newly created home directory
+- -k: to get new users started If you prefer to copy from a different directory (-k your_preferred_directory).
+- -M: create a user without a home directory
+- -e: To set an expiry date for a user account
+- -c: To add a comment or description for a user
+- -s shell: Set the user’s login shell to be shell
+- -p: To set an unencrypted password for the user
 
 ``````sh
 # Create the Dockerfile
@@ -67,7 +67,15 @@ RUN whoami > /tmp/1stwhoami.txt
 USER $NAME
 RUN whoami > /tmp/2ndwhoami.txt
 
-
+# Build image $ run container instance
+docker image build -t myubuntu:81 .
+docker container run -it myubuntu:81
+# output
+Gaurav@79599638d94c:/tmp$ cat 1stwhoami.txt
+root
+Gaurav@79599638d94c:/tmp$ cat 2ndwhoami.txt
+Gaurav
+Gaurav@79599638d94c:/tmp$
 ``````
 ``````sh
 
