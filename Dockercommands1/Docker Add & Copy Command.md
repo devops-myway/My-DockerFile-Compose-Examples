@@ -42,16 +42,18 @@ ADD myapp.tar.gz /opt/myapp/                           #use Add directive for zi
 
 ``````
 ``````sh
-ADD http://example.com/big.tar.xz /usr/src/things/
+# Initial Dockerfile with ADD
+
+FROM openjdk:10-jdk
+VOLUME /tmp
+ADD https://example.com/big.tar.xz /usr/src/things/   # This line is our area of interest
 RUN tar -xJf /usr/src/things/big.tar.xz -C /usr/src/things
-RUN make -C /usr/src/things all
 
 # And instead, do something like:
-
+FROM openjdk:10-jdk
 RUN mkdir -p /usr/src/things \
-    && curl -SL http://example.com/big.tar.xz \
+    && curl -SL https://example.com/big.tar.xz \
     | tar -xJC /usr/src/things \
-    && make -C /usr/src/things all
 
 # Another Example usage of Add and Curl
 
