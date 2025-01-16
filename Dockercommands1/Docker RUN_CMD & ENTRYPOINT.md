@@ -1,18 +1,57 @@
 ##### NOTE: 
 By the end, you'll be a Dockerfile ninja, wielding these instructions with confidence and precision.
 
-##### The RUN Directive
-The RUN directive is a key instruction used in Dockerfiles to run commands while building your Docker image.
-It's your go-to tool for setting up the environment inside the image, allowing you to install packages, update dependencies, configure settings, and basically do anything you need to make your image ready to use.
+##### 
+- ENTRYPOINT — Allows to configure the container as an executable, it provides the file to run when the container is started from a docker image.
+- ENTRYPOINT doesn’t allow you to override the command.
+- Note: it is also possible to overwrite the ENTRYPOINT instruction with the “ — entrypoint” flag on the “docker run” command
+
+- CMD — provides the defaults (argument/executable) for running a container.
+- the CMD instruction is overwritten. So, it is literally the default configuration.
+#### Example 1
+- I chose a python-slim image as my base image because obviously I run python and we want our image to be as lightweight as possible.
 
 ``````sh
-FROM ubuntu:20.04
+moving on to entrypoint.sh:
+#!/bin/bash
+args_array=("$@")
+for i in "${args_array[@]}"
+do
+  :
+  echo "### Got variable $i ###"
+done
+echo "args_count = $#"
+eval "$@"
 
-# Update package lists and install necessary packages
-RUN apt-get update && apt-get install -y \
-    curl \
-    wget \
-    && rm -rf /var/lib/apt/lists/*
+# Dockerfile
+from python:3.8-slim
+COPY . /app/
+WORKDIR /app
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT [ "/app/entrypoint1.sh" ]
+CMD [ "echo", "Default argument from CMD instruction" ]
+
+# Build
+docker build . -t args_example
+
+``````
+##### Example 2
+- 
+``````sh
+
+# with this script in file.sh
+#!/bin/bash
+echo Your container args are: "$@"
+
+# Dockerfile
+FROM ubuntu:14.04
+COPY ./file.sh /
+ENTRYPOINT ["/file.sh"]
+
+# Build
+docker build -t test .
+docker run test hello world
+Your container args are: hello world
 
 ``````
 
