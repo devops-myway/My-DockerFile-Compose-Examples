@@ -158,6 +158,7 @@ These two come into play when you actually run a container from that image. when
 what program to run, and how to run it. That's where CMD and ENTRYPOINT step in. They tell Docker what the main process inside the container is and how to start it.
 
 - ENTRYPOINT: This is where you define the "command part" of the expression. It's the core thing you want your container to do when it starts.
+- ENTRYPOINT doesn’t allow you to override the command.
 - CMD: This is where you define the "parameters" for that command. They're the additional instructions you want to give it.
 
 ##### Example 1 
