@@ -2,74 +2,6 @@
 
 https://docs.docker.com/reference/dockerfile/#add
 
-- The ADD: instruction is used to copy files, directories, or remote files from URL to your Docker images, from the 'src' to the absolute path 'dest'. Also, you can set up the default ownership of your file. ADD does Double Duty ... it adds and untars / unzips.
-
-COPY does not automate untars tar files.
-
-Best Practice: only use ADD when you need this double duty functionality.
-
-- The ADD tarredfiles.tar /root in the Dockerfile automate untars tarredfiles.tar into /root/.
-
-- The COPY more-tarredfiles.tar /root in the Dockerfile merely copies more-tarredfiles.tar into /root/.
-
-``````sh
-touch in-tar-file-1
-touch in-tar-file-2
-touch in-tar-file-3
-
-tar -cvf tarredfiles.tar in-tar-*
-
-touch more-in-tar-file-1 ; touch more-in-tar-file-2 ; touch more-in-tar-file-3 ;
-tar -cvf more-tarredfiles.tar more-in-tar-*
-
-vi Dockerfile
-
-FROM alpine:3.8
-ADD tarredfiles.tar /root
-COPY more-tarredfiles.tar /root
-
-docker build --tag tutorial:demo --file Dockerfile  .
-docker stop -t 0 tutorial   ;   docker container prune -f   ;   docker ps -a
-
-# Let's start up a container to see the result.
-docker stop -t 0 tutorial ;   docker container prune -f  
-docker run -ti -d --name tutorial tutorial:demo /bin/sh -c 'while true; do sleep 60; done'
-docker exec -it tutorial /bin/sh
-
-/ # ls /root
-
-``````
-
-##### Recursive Copy of dirs Using Dockerfile COPY
-Purpose: demo recursive copy of dirs using Dockerfile COPY
- Since we used WORKDIR demo-work-dir the current dir is demo-work-dir
-
- Therefore the COPY will copy all files from demo-directories into demo-work-dir.
-``````sh
-yum install tree
-mkdir -p demo-directories/dir-a/dir-a1/dir-a2
-
-# Let's add some files into each of those dirs.
-touch demo-directories/demo-file
-touch demo-directories/dir-a/file-a
-touch demo-directories/dir-a/dir-a1/file-a1
-touch demo-directories/dir-a/dir-a1/dir-a2/file-a2
-
-# Dockerfile
-FROM alpine:3.8
-WORKDIR demo-work-dir
-COPY demo-directories/ .
-
-# Run
-docker build --tag tutorial:demo --file Dockerfile .
-
-docker stop -t 0 tutorial ; docker container prune -f;docker ps -a
-docker run -ti -d --name tutorial tutorial:demo /bin/sh -c 'while true; do sleep 60; done'
-
-# Enter ls -R at the # shell prompt.
-docker exec -it tutorial /bin/sh
-/demo-work-dir # ls -R
-``````
 ##### COPY Directive
  it's common to include files from our local development environment into the image itself.
  - The COPY directive in a Dockerfile serves this purpose by allowing us to specify which files or directories
@@ -77,6 +9,8 @@ docker exec -it tutorial /bin/sh
  - The <source> specifies the path to the file or directory
  - The <destination> specifies the path where the file or directory should be copied within the Docker image filesystem.
 ``````sh
+COPY [--chown=<user>:<group>] <src>... <dest>
+COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]
 COPY <local_directory_source> <destination_image_fsys>
 
 COPY index.html /var/www/html/index.html
@@ -92,14 +26,43 @@ ADD directive in Dockerfiles functions similar to the COPY directive but with ad
 - ADD directive allows specifying a URL (in this case http://example.com/test-data.csv) as the <source> parameter
 - <source> is a compressed archive file (e.g., .tar, .tar.gz, .tgz, .bz2, .tbz2, .txz, .zip), 
 - Docker will automatically extract its contents into <destination> within the Docker image filesystem.
+##### Add Best Practice
+- ADD has some features (like local-only tar extraction and remote URL support) that are not immediately obvious.
+- Consequently, the best use for ADD is local tar file auto-extraction into the image, as in ADD rootfs.tar.xz /.
+
 
 ``````sh
+ADD [--chown=<user>:<group>] <src>... <dest>
+ADD [--chown=<user>:<group>] ["<src>",... "<dest>"]
 ADD <source_local_directory> <destination_image_file_system>
 
 ADD index.html /var/www/html/index.html,                  #use copy directive un such cases instead: COPY index.html /var/www/html/index.html
-ADD http://example.com/test-data.csv /tmp/test-data.csv  #use Add directive for remote url
+ADD http://example.com/test-data.csv /tmp/test-data.csv  #use Add directive for remote url as advise use Curl
 ADD myapp.tar.gz /opt/myapp/                           #use Add directive for zip files
 
+``````
+``````sh
+ADD http://example.com/big.tar.xz /usr/src/things/
+RUN tar -xJf /usr/src/things/big.tar.xz -C /usr/src/things
+RUN make -C /usr/src/things all
+
+# And instead, do something like:
+
+RUN mkdir -p /usr/src/things \
+    && curl -SL http://example.com/big.tar.xz \
+    | tar -xJC /usr/src/things \
+    && make -C /usr/src/things all
+
+# Another Example usage of Add and Curl
+
+ENV TINI_VERSION=0.10.0
+RUN curl -fsSL "https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini" -o /tini \
+ && curl -fsSL "https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini.asc" -o /tini.asc \
+ && export GNUPGHOME="$(mktemp -d)" \
+ && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 0527A9B7 \
+ && gpg --batch --verify /tini.asc /tini \
+ && rm -rf "$GNUPGHOME" /tini.asc \
+ && chmod +x /tini
 ``````
 ##### COPY vs ADD in Dockerfiles
 - Docker encourages building lightweight, efficient, and predictable containerized applications.
