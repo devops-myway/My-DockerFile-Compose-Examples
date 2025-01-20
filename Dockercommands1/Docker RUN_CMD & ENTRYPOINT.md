@@ -25,9 +25,12 @@ eval "$@"
 
 # Dockerfile
 from python:3.8-slim
-COPY . /app/
+COPY --chown=user1 . /app/        #chown of the file entrypoint.sh to non-root user1
 WORKDIR /app
-RUN chmod +x ./entrypoint.sh
+RUN useradd -m user1 && \
+    chown -R user1:user1 /app
+    chmod u+x ./entrypoint.sh
+USER user1
 ENTRYPOINT [ "/app/entrypoint1.sh" ]
 CMD [ "echo", "Default argument from CMD instruction" ]
 
@@ -107,18 +110,7 @@ sudo docker run -it example2
 FIRST COMMAND
 SECOND COMMAND
 ``````
-#####  Run Multiple Commands Without Shell Invocation
 
-``````sh
-sudo docker run -it example2  echo -e "\ttest1";echo test2
-        test1
-test2
----
-
-$ sudo docker run -it example2  /bin/bash -c "echo -e '\ttest1';echo \$HOME"
-        test1
-/root
-``````
 #####  Run Multiple Commands With a Shell Script
 we can create a shell script that contains all the necessary logic, and copy it to the container’s filesystem
 We can use the Dockerfile COPY directive to copy the shell script file to our container’s filesystem.
