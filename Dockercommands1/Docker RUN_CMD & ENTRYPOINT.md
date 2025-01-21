@@ -27,7 +27,7 @@ eval "$@"
 from python:3.8-slim
 COPY --chown=user1 . /app/        #chown of the file entrypoint.sh to non-root user1
 WORKDIR /app
-RUN useradd -m user1 && \
+RUN useradd -d -m user1 && \
     chown -R user1:user1 /app
     chmod u+x ./entrypoint.sh
 USER user1
