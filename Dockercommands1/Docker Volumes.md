@@ -11,9 +11,10 @@ https://docs.docker.com/reference/dockerfile/#volume
 - Create a Docker Volume Implicitly: The easiest way to create and use a volume is with "docker run" and the -v or --volume flag.
 -  If the “source” is a name, then Docker tries to find this volume or creates one if one cannot be found
 ``````sh
--v <source>:<destination>:<options>
+-v <source-in our host>:<destination-in container>:<options>
 docker run -it --rm --name nginx -p 8080:80 -v demo-earthly:/usr/share/nginx/html nginx
 docker volume ls
+docker volume inspect demo-earthly
 
 ls /var/lib/docker/volumes/target/_data/demo-earthly
 docker run -it --rm -v demo-earthly:/opt/demo-earthly ubuntu ls /opt/demo-earthly
@@ -22,8 +23,11 @@ docker run -it --rm -v demo-earthly:/opt/demo-earthly ubuntu ls /opt/demo-earthl
 - you can use the docker volume create command to explicitly create a data volume.
 - This command gives you the option to choose and configure the volume driver. The implicit creation of volumes always uses the local driver with default settings.
 ``````sh
+docker volume --help
+docker volume create --name my_vol
 docker volume create --name demo-earthly
-
+docker volume inspect my_vol
+docker volume ls
 ``````
 ##### Declare a Docker Volume from Dockerfile
 - Volumes can be declared in your Dockerfile using the VOLUME statement.
@@ -44,10 +48,10 @@ docker volume inspect demo-earthly     #inspect command to view the data volume 
 - -v and --volume are the most common way to mount a volume to a container
 - One notable option is ro which means that the volume will be mounted as read-only
 - An alternative to -v is to add the —mount option to the docker run command. --mount is the more verbose counterpart of -v.
-- Remember if the volume doesn’t exist Docker will create it for you.
+- Remember if the volume doesn’t exist on the source in host machine Docker will create it for you.
 ``````sh
 Syntax:
--v <name>:<destination>:<options>
+-v <name_in the source host>:<destination in container>:<options>
 
 docker run -it -v demo-volume:/data:ro ubuntu
 echo "test" > /data/test       #write into the folder/data to validate that the volume is in read-only mode:
