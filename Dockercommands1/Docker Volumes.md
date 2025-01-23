@@ -1,17 +1,89 @@
 ##### Dockerfile VOLUME
 https://docs.docker.com/reference/dockerfile/#volume
 - Docker volumes are a way to persist and share data between Docker containers and the host machine
-- They provide a mechanism for storing and managing data separately from the container itself.
+- Volumes are not a good choice if you need to access the files from the host, as the volume is completely managed by Docker.
+- Use bind mounts if you need to access files or directories from both containers and the host
 - Volumes are especially useful when you need to preserve data even if the container is removed or replaced.
 - Docker volume is simply a directory that shares data among container to container, container to host, host to container.
 -  volumes are stored in a single location (most likely /var/lib/docker/volumes/ on unix systems) and greatly facilitates managing data (backup, restore, and migration)
 -  Docker enables you to manage volume with the command line docker volume, making their management simple
 
+##### Bind mounts
+- When you use a bind mount, a file or directory on the host machine is mounted from the host into a container
+- when you use a volume, a new directory is created within Docker's storage directory on the host machine, and Docker manages that directory's contents.
+- Volumes are not a good choice if you need to access the files from the host, as the volume is completely managed by Docker.
+- Use bind mounts if you need to access files or directories from both containers and the host
+- Option	                                            Description for mount
+- source, src	:                 The location of the file or directory on the host. This can be an absolute or relative path.
+- destination, dst, target	:   The path where the file or directory is mounted in the container. Must be an absolute path.
+- readonly, ro	:               If present, causes the bind mount to be mounted into the container as read-only.
+- bind-propagation: 	          If present, changes the bind propagation
+
+##### When to use bind mounts
+- Sharing source code or build artifacts between a development environment on the Docker host and a container.
+- When you want to create or generate files in a container and persist the files onto the host's filesystem.
+- This is how Docker provides DNS resolution to containers by default, by mounting /etc/resolv.conf from the host machine into each container.
+- If you bind mount file or directory into a directory in the container in which files or directories exist, the pre-existing files are obscured by the mount.
+- Bind mounts have write access to files on the host by default.
+- One side effect of using bind mounts is that you can change the host filesystem via processes running in a container, including creating, modifying, or deleting important system files or directories
+
+``````sh
+docker run --mount type=bind,src=<host-path>,dst=<container-path>
+docker run --volume <host-path>:<container-path>
+``````
+- --mount: does not automatically create a directory if the specified mount path does not exist on the host. Instead, it produces an error:
+- --volume: to bind-mount a file or directory that does not yet exist on the Docker host, Docker automatically creates the directory on the host for you. It's always created as a directory
+- In general, --mount is preferred
+``````sh
+docker run --mount type=bind,src=/dev/noexist,dst=/mnt/foo alpine
+docker: Error response from daemon: invalid mount config for type "bind": bind source path does not exist: /dev/noexist.
+``````
+##### Start a container with a bind mount
+- a directory source and that when you build the source code, the artifacts are saved into another directory, source/target/
+- Use the following command to bind-mount the target/ directory into your container at /app/
+``````sh
+docker run -d \
+  -it \
+  --name devtest \
+  --mount type=bind,source="$(pwd)"/target,target=/app \
+  nginx:latest
+
+docker inspect devtest
+docker container rm -fv devtest
+``````
+##### Use a read-only bind mount
+- For some development applications, the container needs to write into the bind mount, so changes are propagated back to the Docker host.
+-  but mounts the directory as a read-only bind mount, by adding ro to the (empty by default) list of options, after the mount point within the container.
+``````sh
+docker run -d \
+  -it \
+  --name devtest \
+  --mount type=bind,source="$(pwd)"/target,target=/app,readonly \
+  nginx:latest
+
+docker inspect devtest
+docker container rm -fv devtest
+``````
+##### Use a bind mount with Docker Compose
+- A single Docker Compose service with a bind mount looks like this
+``````sh
+services:
+  frontend:
+    image: node:lts
+    volumes:
+      - type: bind
+        source: ./static
+        target: /opt/app/static
+volumes:
+  myapp:
+``````
+
 ##### Creating and Managing Docker Volumes
 - Create a Docker Volume Implicitly: The easiest way to create and use a volume is with "docker run" and the -v or --volume flag.
 -  If the “source” is a name, then Docker tries to find this volume or creates one if one cannot be found
 ``````sh
--v <source-in our host>:<destination-in container>:<options>
+docker run -v <host-path>:<container-path>[:opts]
+
 docker run -it --rm --name nginx -p 8080:80 -v demo-earthly:/usr/share/nginx/html nginx
 docker volume ls
 docker volume inspect demo-earthly
@@ -24,11 +96,32 @@ docker run -it --rm -v demo-earthly:/opt/demo-earthly ubuntu ls /opt/demo-earthl
 - This command gives you the option to choose and configure the volume driver. The implicit creation of volumes always uses the local driver with default settings.
 ``````sh
 docker volume --help
-docker volume create --name my_vol
-docker volume create --name demo-earthly
-docker volume inspect my_vol
+docker volume create my-vol
 docker volume ls
+docker volume inspect my_vol
+docker volume rm my-vol
 ``````
+##### Start a container with a volume
+- If you start a container with a volume that doesn't yet exist, Docker creates the volume for you.
+- The following example mounts the volume myvol2 into /app/ in the container.
+- -v and --mount examples produce the same result.
+``````sh
+docker run -d \
+  --name devtest \
+  --mount source=myvol2,target=/app \
+  nginx:latest
+or
+docker run -d \
+  --name devtest \
+  -v myvol2:/app \
+  nginx:latest
+
+docker inspect devtest
+docker container stop devtest
+docker container rm devtest
+docker volume rm myvol2
+``````
+
 ##### Declare a Docker Volume from Dockerfile
 - Volumes can be declared in your Dockerfile using the VOLUME statement.
 - This statement declares that a specific path of the container must be mounted to a Docker volume
