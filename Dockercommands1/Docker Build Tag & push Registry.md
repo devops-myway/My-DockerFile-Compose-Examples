@@ -5,6 +5,9 @@
 - If you're uploading your images to Docker Hub, though, you'll definitely need to add your Docker Hub username to the beginning of the repository name, like this:
 
 ``````sh
+syntax:
+index.docker.io/varun/web:latest  ------> default Registry > Repository > Image Tag
+
 docker tag <source_repository_name>:<tag> <target_repository_name>:tag
 docker build -t <target_repository_name>:tag Dockerfile
 docker built -t <dockerhub_user>/<target_repository_name>:tag Dockerfile
