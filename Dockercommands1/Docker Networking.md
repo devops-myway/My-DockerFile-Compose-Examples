@@ -30,8 +30,8 @@
 
 #####  Which Network Type Should I Use?
 ###### Bridge networks: 
-- are the most suitable option for the majority of scenarios you’ll encounter.
-- Containers in the network can communicate with each other using their own IP addresses and DNS names
+- Bridge is a private default network driver. The bridge network driver allows containers connected to the
+- same bridge network to communicate while providing isolation from containers not connected to that bridge network
 ###### Host networks
 - are best when you want to bind ports directly to your host’s interfaces and aren’t concerned about network isolation.
 ###### Overlay networks
@@ -56,13 +56,15 @@
 - You can attach new containers to a network by setting the --network flag with your docker run command
 - Next, open your third terminal window and start another Ubuntu container, this time without the --network flag
 ``````sh
+docker network create –-help
+
 # The new network’s useless at the moment because no containers have been connected.
 
-$ docker network create demo-network -d bridge
+$ docker network create demo-network -d bridge    # create a custom bridge network
 50ed05634f6a3312e56700ef683ca39df44bfc826e2e4da9179c2593c79910f9
 
-docker run -it --rm --name container1 --network demo-network busybox:latest
-docker run -it --rm --name container2 busybox:latest
+docker run -it --rm --name container1 --network demo-network busybox:latest    # attach a container1 to the custom bridge network
+docker run -it --rm --name container2 busybox:latest        # this is on default bridge network.
 
 # Now try communicating between the two containers, using their names:
 #The containers aren’t in the same network yet, so they can’t directly communicate with each other.
@@ -80,29 +82,30 @@ PING container2 (172.22.0.3): 56 data bytes
 ``````
 - Docker uses a software-based bridge network that allows containers connected
 - to the same bridge network to communicate while isolating them from other containers not running in the same bridge network.
-- containers on the same bridge can see each other using their IPs. What if I want to use the containers’ name instead of the IP.
-- On the other hand, the default bridge network does not support automatic service discovery.
+- containers on the same bridge can see each other using their IPs.
+- BIG QUESTIONS!!!!!! What if I want to use the containers’ name instead of the IP.
+- ANSWER!!!!! the default bridge network does not support automatic service discovery.
 
 ``````sh
 # how containers running in the same bridge network can connect to each other
 
-docker run -dit --name busybox1 busybox
-docker run -dit --name busyboxZ busybox
+docker run -dit --name busybox1 busybox   # container1 on same default bridge network will connect with IP
+docker run -dit --name busybox2 busybox     # container2 on same default bridge network will connect with IP
 
 # These are the IP addresses of our containers:
 docker inspect busybox1 |  jq -r  ' [0].NetworkSettings.IPAddress'
 docker inspect busybox2 |  jq -r  '.[0].NetworkSettings.IPAddress'
 
 docker exec -it busybox2 ping 172.17.0.3
-docker exec -it busybox2 ping busybox1
+docker exec -it busybox2 ping busybox1   # this will throw an error
 ``````
-##### User-defined Bridge Networks
+##### Custom or User-defined Bridge Networks
 - You can create a second bridge network using:
 - We can conclude that only user-defined bridge networks support automatic service discovery
 ``````sh
 docker network create my_bridge --driver bridge
 
-# Now, attach “busybox1” and “busybox2” to the same network:
+# Now, attach “busybox1” and “busybox2” to the same network
 docker network connect my_bridge busybox1
 docker network connect my_bridge busybox2
 
@@ -147,7 +150,51 @@ docker network ls
 docker network rm demo-network
 docker network prune
 ``````
+##### Connect containers to a Docker network
+- You connect containers to a Docker network to enable communication between them
+- You can also use the --network host flag to run a container in host networking mode
+- docker run -dit --network host nginx:latest
+``````sh
+docker network connect [network-name] [container-name]
+
+docker network connect test-network nginx-container
+docker network inspect test-network
+
+#If you want to create a new container with your custom network, use the --network option, as shown below:
+docker run --network test-macvlan-network nginx:latest
+
+``````
+##### Disconnect containers from a Docker network
+- docker inspect nginx-container -f "{{json .NetworkSettings.Networks }}"
+``````sh
+docker network ls
+docker network disconnect [container-name-or-id]
+
+docker network disconnect test-network nginx-container
+docker inspect nginx-container -f "{{json .NetworkSettings.Networks }}"
+``````
+##### Docker networks in Docker Compose
+- Docker Compose for multicontainer applications, you can define networks in the docker-compose.yml file using the networks section
+``````sh
+vi docker-compose.yml
+
+version: '3'
+services:
+  web:
+    image: nginx:latest
+    networks:
+      - my-network
+networks:
+  my-network:
+    driver: bridge
+
+docker-compose up -d
+``````
+##### Remove Docker networks
 
 ``````sh
+docker network rm [network-name]
 
+docker network rm test-network
+docker network prune
 ``````
