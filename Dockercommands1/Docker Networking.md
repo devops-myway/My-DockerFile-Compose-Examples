@@ -1,6 +1,6 @@
 ##### Docker Network Types
 - Docker networks configure communications between neighboring containers and external services
-- Docker comes with five built-in network drivers that implement core networking functionality:
+- Docker comes with five built-in network drivers or --driver flag that implement core networking functionality:
 
 #####  bridge
 - Bridge networks create a software-based bridge between your host and the container.
