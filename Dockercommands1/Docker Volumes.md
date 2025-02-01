@@ -8,18 +8,19 @@ https://docs.docker.com/reference/dockerfile/#volume
 -  volumes are stored in a single location (most likely /var/lib/docker/volumes/ on unix systems) and greatly facilitates managing data (backup, restore, and migration)
 -  Docker enables you to manage volume with the command line docker volume, making their management simple
 
-##### Bind mounts
+##### Bind mounts : Access files or directories on host2container
 - When you use a bind mount, a file or directory on the host machine is mounted from the host into a container
 - when you use a volume, a new directory is created within Docker's storage directory on the host machine, and Docker manages that directory's contents.
-- Volumes are not a good choice if you need to access the files from the host, as the volume is completely managed by Docker.
-- Use bind mounts if you need to access files or directories from both containers and the host
+- "Volumes" are not a good choice if you need to access the files from the host, as the volume is completely managed by Docker.
+- "Bind mounts" if you need to access files or directories from both containers and the host
+
 - Option	                                            Description for mount
 - source, src	:                 The location of the file or directory on the host. This can be an absolute or relative path.
 - destination, dst, target	:   The path where the file or directory is mounted in the container. Must be an absolute path.
 - readonly, ro	:               If present, causes the bind mount to be mounted into the container as read-only.
 - bind-propagation: 	          If present, changes the bind propagation
 
-##### When to use bind mounts
+##### When to use Bind mounts
 - Sharing source code or build artifacts between a development environment on the Docker host and a container.
 - When you want to create or generate files in a container and persist the files onto the host's filesystem.
 - This is how Docker provides DNS resolution to containers by default, by mounting /etc/resolv.conf from the host machine into each container.
