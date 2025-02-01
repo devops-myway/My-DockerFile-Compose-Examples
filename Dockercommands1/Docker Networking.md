@@ -32,6 +32,11 @@
 ###### Bridge networks: 
 - Bridge is a private default network driver. The bridge network driver allows containers connected to the
 - same bridge network to communicate while providing isolation from containers not connected to that bridge network
+- to the same bridge network to communicate while isolating them from other containers not running in the same bridge network.
+- containers on the same bridge can see each other using their IPs and not their names.
+- BIG QUESTIONS!!!!!! What if I want to use the containers’ name instead of the IP.
+- ANSWER!!!!! the default bridge network does not support automatic service discovery.
+- Service discovery is supported by custom or user-defined bridge network driver.
 ###### Host networks
 - are best when you want to bind ports directly to your host’s interfaces and aren’t concerned about network isolation.
 ###### Overlay networks
@@ -80,11 +85,6 @@ docker network connect demo-network container2
 PING container2 (172.22.0.3): 56 data bytes
 64 bytes from 172.22.0.3: seq=0 ttl=64 time=4.205 ms
 ``````
-- Docker uses a software-based bridge network that allows containers connected
-- to the same bridge network to communicate while isolating them from other containers not running in the same bridge network.
-- containers on the same bridge can see each other using their IPs.
-- BIG QUESTIONS!!!!!! What if I want to use the containers’ name instead of the IP.
-- ANSWER!!!!! the default bridge network does not support automatic service discovery.
 
 ``````sh
 # how containers running in the same bridge network can connect to each other
