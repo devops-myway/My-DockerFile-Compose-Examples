@@ -31,6 +31,7 @@ docker build -t my-custom-nginx .
 ##### How to Use the Docker Build --no-cache Option
 - You can rebuild the image from the base image without using cached layers by using the --no-cache option.
 - To ensure that you're getting the latest versions of dependencies in your build, you can use the --no-cache option to avoid cache hits.
+- the --no-cache option is used to keep the size of the image small by storing the index in the local cache.
 ``````sh
 docker build -t my-custom-nginx .
 docker build --no-cache -t my-image:my-tag .
